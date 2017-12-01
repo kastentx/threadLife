@@ -16,7 +16,7 @@ public class Board {
 		for (int i = 0; i < size; i++) {
 			grid.add(new ArrayList<>());
 			for (int j = 0; j < size; j++) {
-				grid.get(i).add(new Cell(false, i, j));
+				grid.get(i).add(new Cell(false));
 			}
 		}
 	}
