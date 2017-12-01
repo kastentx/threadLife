@@ -4,29 +4,30 @@ import java.util.ArrayList;
 
 public class Board {
 	private ArrayList<ArrayList<Cell>> grid;
+	private int size;
 	
 	// there will be a phase that determines the next state and it will be saved to this
 	// before getting switched over?
 	// private ArrayList<ArrayList<Cell>> nextState;
-
-	public Board(ArrayList<ArrayList<Cell>> grid) {
-		super();
-		this.grid = grid;
-	}
 	
 	public Board(int size) {
 		super();
+		this.size = size;
 		grid = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			grid.add(new ArrayList<>());
 			for (int j = 0; j < size; j++) {
-				grid.get(i).add(new Cell(false));
+				grid.get(i).add(new Cell(this, 0, i, j));
 			}
 		}
 	}
 
 	public ArrayList<ArrayList<Cell>> getGrid() {
 		return grid;
+	}
+	
+	public int getSize() {
+		return size;
 	}
 
 	public void setGrid(ArrayList<ArrayList<Cell>> grid) {
@@ -38,7 +39,8 @@ public class Board {
 		ArrayList<Cell> cells = new ArrayList<>();
 		for (ArrayList<Cell> row : grid) {
 			for (Cell cell : row) {
-				cell.start();
+				Thread cellThread = new Thread(cell);
+				cellThread.start();
 				cells.add(cell);
 			}
 		}
@@ -58,6 +60,7 @@ public class Board {
 			for (Cell cell : cells) cell.resetComplete();
 			System.out.println("'complete' signals reset");
 		}
-		for (Cell cell : cells ) cell.join(); System.out.println("\nBoard fully advanced.");
+		System.out.println("\nBoard fully advanced.");
+		
 	}
 }

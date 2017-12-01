@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class BoardDisplay {
 	public static void display(Board myBoard) {
 		ArrayList<ArrayList<Cell>> grid = myBoard.getGrid();
-		int size = grid.size();
+		int size = myBoard.getSize();
 		System.out.print("\n");
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -16,7 +16,7 @@ public class BoardDisplay {
 	}
 	
 	private static String getCellChar(Cell myCell) {
-		if (myCell.getCellState() == true) return "X";
+		if (myCell.getCellState() == 1) return "X";
 		else return "O";
 	}
 }

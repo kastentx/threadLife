@@ -6,12 +6,17 @@ public class Main {
 		Board myBoard = new Board(10);
 		
 		// output board to the console
-		//BoardDisplay.display(myBoard);
+		BoardDisplay.display(myBoard);
 		
-		// run cell threads (flip each cell)
+		// run cell threads to advance board to next generation
+		// to advance multiple generations... put this in a loop
+		myBoard.runCellThreads();
+		
+		BoardDisplay.display(myBoard);
+		
 		myBoard.runCellThreads();
 		
 		// output board to the console
-		//BoardDisplay.display(myBoard);
+		BoardDisplay.display(myBoard);
 	}
 }
