@@ -17,7 +17,10 @@ public class Board {
 		for (int i = 0; i < size; i++) {
 			grid.add(new ArrayList<>());
 			for (int j = 0; j < size; j++) {
-				grid.get(i).add(new Cell(this, 0, i, j));
+				// debugging neighbor scores with random cells here
+				Cell newCell = new Cell(this, 0, i, j);
+				if (newCell.getID() % 3 == 0) newCell.setCellState(1);
+				grid.get(i).add(newCell);
 			}
 		}
 	}

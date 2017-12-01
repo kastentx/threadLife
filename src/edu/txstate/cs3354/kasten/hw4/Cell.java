@@ -37,15 +37,23 @@ public class Cell implements Runnable {
 		return NUM_PHASES; 
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
 	public int getCellState() {
 		return state;
+	}
+	
+	public void setCellState(int newState) {
+		this.state = newState;
 	}
 	
 	public int getNextState() {
 		return nextState;
 	}
 	
-	public int getNeighborCount() {
+	public int getNeighborScore() {
 		  int score = 0;
 		  int lastPos = board.getSize()-1;
 		  ArrayList<ArrayList<Cell>> grid = board.getGrid();
@@ -68,26 +76,19 @@ public class Cell implements Runnable {
 		  if (col < lastPos && row < lastPos) // lower-right
 			  score += grid.get(row+1).get(col+1).getCellState();
 		  
-		  System.out.printf("Thread %d has a N-score of %d\n", id, score);
+		  // System.out.printf("Thread %d has a N-score of %d\n", id, score); <-- for debugging score
 		  return score;
 	}
 	
-	public void setCellState(int newState) {
-		this.state = newState;
-	}
-	
 	private void setNextState() {
-		// FOR NOW this flips the current state
-		// LATER this will determine if a cell lives or dies based 
-		// on its neighbor count
-		getNeighborCount();
-		nextState = (getCellState() + 1);
+		// sets the next state for this cell
+		// based on Conway's Game of Life rules
+		int score = getNeighborScore();
+		if (state == 1 && (score < 2 || score > 3)) nextState = 0;
+		if (state == 0 && score == 3) nextState = 1;
 	}
 	
 	private void advanceState() {
-		// this should be simple.. just setting the state to the next one
-		// LOOKING AHEAD this will occur after all cells have set their
-		// next state in phase 1
 		setCellState(getNextState());
 	}
 	
