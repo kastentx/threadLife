@@ -7,5 +7,11 @@ public class Main {
 		
 		// output board to the console
 		BoardDisplay.display(myBoard);
+		
+		// run cell threads (flip each cell)
+		myBoard.runCellThreads();
+		
+		// output board to the console
+		BoardDisplay.display(myBoard);
 	}
 }
