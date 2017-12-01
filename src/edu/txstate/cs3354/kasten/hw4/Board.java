@@ -6,10 +6,6 @@ public class Board {
 	private ArrayList<ArrayList<Cell>> grid;
 	private int size;
 	
-	// there will be a phase that determines the next state and it will be saved to this
-	// before getting switched over?
-	// private ArrayList<ArrayList<Cell>> nextState;
-	
 	public Board(int size) {
 		super();
 		this.size = size;
@@ -53,15 +49,11 @@ public class Board {
 			
 			for (Cell cell : cells) cell.phaseRunning.waitForSignal();
 			System.out.printf("\nBoard thinks all threads are running phase %d\n", phase);
-			
 			for (Cell cell : cells) cell.resetRunning();
-			System.out.println("'running' signals reset");
 
 			for (Cell cell : cells) cell.phaseComplete.waitForSignal();
 			System.out.printf("\nBoard thinks all threads have completed phase %d\n", phase);
-			
 			for (Cell cell : cells) cell.resetComplete();
-			System.out.println("'complete' signals reset");
 		}
 		System.out.println("\nBoard fully advanced.");
 		

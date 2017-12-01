@@ -49,10 +49,6 @@ public class Cell implements Runnable {
 		this.state = newState;
 	}
 	
-	public int getNextState() {
-		return nextState;
-	}
-	
 	public int getNeighborScore() {
 		  int score = 0;
 		  int lastPos = board.getSize()-1;
@@ -89,7 +85,7 @@ public class Cell implements Runnable {
 	}
 	
 	private void advanceState() {
-		setCellState(getNextState());
+		setCellState(nextState);
 	}
 	
 	public void run() {
