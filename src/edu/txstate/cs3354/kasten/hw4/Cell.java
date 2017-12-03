@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Cell implements Runnable {
 	private static int counter = 0;
-	private final int NUM_PHASES = 2;  // THIRD PHASE could be added, to see if cell needs calculate?
+	private final int NUM_PHASES = 2;
 	private int id;
 	private int row;
 	private int col;
@@ -25,28 +25,41 @@ public class Cell implements Runnable {
 		this.col = col;
 	}
 	
-	public void resetRunning() { 
-		phaseRunning = new Signal(); 
+	public void resetRunning() { phaseRunning = new Signal(); }
+	
+	public void resetComplete() { phaseComplete = new Signal(); }
+	
+	public int getNumPhases() { return NUM_PHASES; }
+	
+	public int getID() { return id; }
+	
+	public int getCellState() { return state; }
+	
+	public void setCellState(int newState) { this.state = newState; }
+		
+	private void setNextState() {
+		// sets the next state for this cell
+		// based on Conway's Game of Life rules
+		int score = getNeighborScore();
+		if (state == 1 && (score < 2 || score > 3)) nextState = 0;
+		if (state == 0 && score == 3) nextState = 1;
 	}
 	
-	public void resetComplete() { 
-		phaseComplete = new Signal(); 
+	private void advanceState() { setCellState(nextState); }
+	
+	public void run() {
+		for (int i = 1; i <= NUM_PHASES; i++)
+			try { 
+				goForPhase.waitForSignal(); goForPhase = new Signal();
+				phaseRunning.setSignal(); // System.out.printf("Thread %d beginning phase %d\n", id, i);
+				doPhase(i); 
+				phaseComplete.setSignal(); // System.out.printf("Thread %d completed phase %d\n", id, i);	
+			} catch (InterruptedException exception) { exception.printStackTrace(); }	
 	}
 	
-	public int getNumPhases() { 
-		return NUM_PHASES; 
-	}
-	
-	public int getID() {
-		return id;
-	}
-	
-	public int getCellState() {
-		return state;
-	}
-	
-	public void setCellState(int newState) {
-		this.state = newState;
+	public void doPhase(int phaseNum) throws InterruptedException {	
+		if (phaseNum == 1) setNextState();
+		if (phaseNum == 2) advanceState();
 	}
 	
 	public int getNeighborScore() {
@@ -74,33 +87,5 @@ public class Cell implements Runnable {
 		  
 		  // System.out.printf("Thread %d has a N-score of %d\n", id, score); <-- for debugging score
 		  return score;
-	}
-	
-	private void setNextState() {
-		// sets the next state for this cell
-		// based on Conway's Game of Life rules
-		int score = getNeighborScore();
-		if (state == 1 && (score < 2 || score > 3)) nextState = 0;
-		if (state == 0 && score == 3) nextState = 1;
-	}
-	
-	private void advanceState() {
-		setCellState(nextState);
-	}
-	
-	public void run() {
-		for (int i = 1; i <= NUM_PHASES; i++) {
-			try { 
-				goForPhase.waitForSignal(); goForPhase = new Signal();
-				phaseRunning.setSignal(); // System.out.printf("Thread %d beginning phase %d\n", id, i);
-				doPhase(i); 
-				phaseComplete.setSignal(); // System.out.printf("Thread %d completed phase %d\n", id, i);	
-			} catch (InterruptedException exception) { exception.printStackTrace(); }	
-		}
-	}
-	
-	public void doPhase(int phaseNum) throws InterruptedException {	
-		if (phaseNum == 1) setNextState();
-		if (phaseNum == 2) advanceState();
 	}
 }
