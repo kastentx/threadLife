@@ -20,7 +20,7 @@ public class Cell implements Runnable {
 		super();
 		this.board = board;
 		this.state = isLiving;
-		this.id = counter++;  // counter can probably be taken out
+		this.id = counter++;
 		this.row = row;
 		this.col = col;
 	}
@@ -38,8 +38,6 @@ public class Cell implements Runnable {
 	public void setCellState(int newState) { this.state = newState; }
 		
 	private void setNextState() {
-		// sets the next state for this cell
-		// based on Conway's Game of Life rules
 		int score = getNeighborScore();
 		if (state == 1 && (score < 2 || score > 3)) nextState = 0;
 		if (state == 0 && score == 3) nextState = 1;
@@ -51,9 +49,9 @@ public class Cell implements Runnable {
 		for (int i = 1; i <= NUM_PHASES; i++)
 			try { 
 				goForPhase.waitForSignal(); goForPhase = new Signal();
-				phaseRunning.setSignal(); // System.out.printf("Thread %d beginning phase %d\n", id, i);
+				phaseRunning.setSignal(); 
 				doPhase(i); 
-				phaseComplete.setSignal(); // System.out.printf("Thread %d completed phase %d\n", id, i);	
+				phaseComplete.setSignal(); 
 			} catch (InterruptedException exception) { exception.printStackTrace(); }	
 	}
 	
@@ -68,24 +66,23 @@ public class Cell implements Runnable {
 		  ArrayList<ArrayList<Cell>> grid = board.getGrid();
 
 		  // check for living neighbors
-		  if (row > 0) 						 // top
+		  if (row > 0) 							// top
 			  score += grid.get(row-1).get(col).getCellState();
-		  if (row < lastPos) 				 // bottom
+		  if (row < lastPos) 						// bottom
 			  score += grid.get(row+1).get(col).getCellState();
-		  if (col > 0) 						 // left
+		  if (col > 0) 							// left
 			  score += grid.get(row).get(col-1).getCellState();
-		  if (col < lastPos) 			 	 // right
+		  if (col < lastPos) 			 			// right
 			  score += grid.get(row).get(col+1).getCellState();
-		  if (col > 0 && row > 0)			 // upper-left
+		  if (col > 0 && row > 0)					// upper-left
 			  score += grid.get(row-1).get(col-1).getCellState();
-		  if (col > 0 && row < lastPos)		 // lower-left
+		  if (col > 0 && row < lastPos)		 			// lower-left
 			  score += grid.get(row+1).get(col-1).getCellState();
-		  if (col < lastPos && row > 0)		 // upper-right
+		  if (col < lastPos && row > 0)		 			// upper-right
 			  score += grid.get(row-1).get(col+1).getCellState();
-		  if (col < lastPos && row < lastPos) // lower-right
+		  if (col < lastPos && row < lastPos) 				// lower-right
 			  score += grid.get(row+1).get(col+1).getCellState();
-		  
-		  // System.out.printf("Thread %d has a N-score of %d\n", id, score); <-- for debugging score
+		
 		  return score;
 	}
 }
